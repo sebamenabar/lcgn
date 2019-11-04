@@ -11,7 +11,7 @@ from util.clevr_train.data_reader import DataReader
 cfg = build_cfg_from_argparse()
 
 # Start session
-os.environ["CUDA_VISIBLE_DEVICES"] = cfg.GPUS
+#os.environ["CUDA_VISIBLE_DEVICES"] = cfg.GPUS
 if len(cfg.GPUS.split(',')) > 1:
     print('PyTorch implementation currently only supports single GPU')
 

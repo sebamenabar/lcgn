@@ -25,6 +25,7 @@ __C.IMDB_FILE = './exp_gqa/gqa_dataset/questions/%s_questions.json'
 __C.IMAGE_DIR = './exp_gqa/gqa_dataset/images'
 __C.SPATIAL_FEATURE_DIR = './exp_gqa/gqa_dataset/spatial'
 __C.OBJECTS_FEATURE_DIR = './exp_gqa/gqa_dataset/objects'
+__C.USE_OBJECTS_MERGED_INFO = False
 
 # __C.USE_SPATIAL_FEATURE = False
 __C.FEAT_TYPE = 'objects'  # 'spatial', 'objects' or 'scene_graph'

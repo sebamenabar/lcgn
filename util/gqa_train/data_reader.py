@@ -61,7 +61,8 @@ class BatchLoaderGqa:
 
         if self.load_objects_feature:
             objects_feature_dir = data_params['objects_feature_dir']
-            self.objects_loader = ObjectsFeatureLoader(objects_feature_dir)
+            use_objects_merged_info = data_params['use_objects_merged_info']
+            self.objects_loader = ObjectsFeatureLoader(objects_feature_dir, use_objects_merged_info)
             # load one feature map to peek its size
             self.objects_M = data_params.get('objects_max_num', 100)
             x, _ = self.objects_loader.load_feature(self.imdb[0]['imageId'])

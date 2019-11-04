@@ -10,7 +10,7 @@ from util.gqa_train.data_reader import DataReader
 cfg = build_cfg_from_argparse()
 
 # Start session
-os.environ["CUDA_VISIBLE_DEVICES"] = cfg.GPUS
+# os.environ["CUDA_VISIBLE_DEVICES"] = cfg.GPUS
 if len(cfg.GPUS.split(',')) > 1:
     print('PyTorch implementation currently only supports single GPU')
 
@@ -33,7 +33,9 @@ def load_train_data(max_num=0):
         vocab_name_file=cfg.VOCAB_NAME_FILE,
         vocab_attr_file=cfg.VOCAB_ATTR_FILE,
         add_pos_enc=cfg.ADD_POS_ENC,
-        pos_enc_dim=cfg.PE_DIM, pos_enc_scale=cfg.PE_SCALE)
+        pos_enc_dim=cfg.PE_DIM, pos_enc_scale=cfg.PE_SCALE,
+        use_objects_merged_info=cfg.USE_OBJECTS_MERGED_INFO,
+        )
     num_vocab = data_reader.batch_loader.vocab_dict.num_vocab
     num_choices = data_reader.batch_loader.answer_dict.num_vocab
     return data_reader, num_vocab, num_choices
@@ -87,7 +89,9 @@ def load_eval_data(max_num=0):
         vocab_name_file=cfg.VOCAB_NAME_FILE,
         vocab_attr_file=cfg.VOCAB_ATTR_FILE,
         add_pos_enc=cfg.ADD_POS_ENC,
-        pos_enc_dim=cfg.PE_DIM, pos_enc_scale=cfg.PE_SCALE)
+        pos_enc_dim=cfg.PE_DIM, pos_enc_scale=cfg.PE_SCALE,
+        use_objects_merged_info=cfg.USE_OBJECTS_MERGED_INFO,
+        )
     num_vocab = data_reader.batch_loader.vocab_dict.num_vocab
     num_choices = data_reader.batch_loader.answer_dict.num_vocab
     return data_reader, num_vocab, num_choices

@@ -2,6 +2,9 @@ FEAT_TYPE: objects
 H_FEAT: 1
 W_FEAT: 100
 D_FEAT: 2112  # 2048+64
+OBJECTS_FEATURE_DIR: './exp_gqa/gqa_dataset/data'
+USE_OBJECTS_MERGED_INFO: True
+# IMDB_FILE: './exp_gqa/gqa_dataset/question/%s_data.json'
 
 TRAIN:
   LOSS_TYPE: sigmoid

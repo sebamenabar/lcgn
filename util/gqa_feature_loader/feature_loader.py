@@ -29,55 +29,83 @@ class SpatialFeatureLoader:
 
 
 class ObjectsFeatureLoader:
-    def __init__(self, feature_dir):
-        info_file = osp.join(feature_dir, 'gqa_objects_info.json')
+    def __init__(self, feature_dir, use_objects_merged_info):
+        self.use_objects_merged_info = use_objects_merged_info
+        if use_objects_merged_info:
+            info_file = osp.join(feature_dir, 'gqa_objects_merged_info.json')
+
+            features_fp = osp.join(feature_dir, 'gqa_objects.h5')
+            self.h5_files = [h5py.File(features_fp, 'r')]
+        else:
+            info_file = osp.join(feature_dir, 'gqa_objects_info.json')
+
+            num_files = len(glob(osp.join(feature_dir, 'gqa_objects_*.h5')))
+            h5_paths = [osp.join(feature_dir, 'gqa_objects_%d.h5' % n)
+                        for n in range(num_files)]
+            self.h5_files = [h5py.File(path, 'r') for path in h5_paths]
         with open(info_file) as f:
             self.all_info = json.load(f)
-
-        num_files = len(glob(osp.join(feature_dir, 'gqa_objects_*.h5')))
-        h5_paths = [osp.join(feature_dir, 'gqa_objects_%d.h5' % n)
-                    for n in range(num_files)]
-        self.h5_files = [h5py.File(path, 'r') for path in h5_paths]
 
     def __del__(self):
         for f in self.h5_files:
             f.close()
 
+    def get_h5_idx_num_and_info(self, imageId):
+        if self.use_objects_merged_info:
+            file_idx = 0
+            info = self.all_info[imageId]
+            idx, num = info['index'], info['objectsNum']
+        else:
+            info = self.all_info[imageId]
+            file_idx, idx, num = info['file'], info['idx'], info['objectsNum']
+        
+        return self.h5_files[file_idx], idx, num, info
+
+
     def load_feature(self, imageId):
-        info = self.all_info[imageId]
-        file, idx, num = info['file'], info['idx'], info['objectsNum']
-        feature = self.h5_files[file]['features'][idx]
+        # info = self.all_info[imageId]
+        # file, idx, num = info['file'], info['idx'], info['objectsNum']
+        # feature = self.h5_files[file]['features'][idx]
+        h5_file, idx, num, info = self.get_h5_idx_num_and_info(imageId)
+        feature = h5_file['features'][idx]
         valid = get_valid(len(feature), num)
         return feature, valid
 
     def load_bbox(self, imageId):
-        info = self.all_info[imageId]
-        file, idx, num = info['file'], info['idx'], info['objectsNum']
-        bbox = self.h5_files[file]['bboxes'][idx]
+        # info = self.all_info[imageId]
+        # file, idx, num = info['file'], info['idx'], info['objectsNum']
+        # bbox = self.h5_files[file]['bboxes'][idx]
+        h5_file, idx, num, info = self.get_h5_idx_num_and_info(imageId)
+        bbox = h5_file['bboxes'][idx]
         valid = get_valid(len(bbox), num)
         return bbox, valid
 
     def load_feature_bbox(self, imageId):
-        info = self.all_info[imageId]
-        file, idx, num = info['file'], info['idx'], info['objectsNum']
-        h5_file = self.h5_files[file]
+        # info = self.all_info[imageId]
+        # file, idx, num = info['file'], info['idx'], info['objectsNum']
+        # h5_file = self.h5_files[file]
+        h5_file, idx, num, info = self.get_h5_idx_num_and_info(imageId)
         feature, bbox = h5_file['features'][idx], h5_file['bboxes'][idx]
         valid = get_valid(len(bbox), num)
         return feature, bbox, valid
 
     def load_normalized_bbox(self, imageId):
-        info = self.all_info[imageId]
-        file, idx, num = info['file'], info['idx'], info['objectsNum']
-        bbox = self.h5_files[file]['bboxes'][idx]
+        # info = self.all_info[imageId]
+        # file, idx, num = info['file'], info['idx'], info['objectsNum']
+        # bbox = self.h5_files[file]['bboxes'][idx]
+        h5_file, idx, num, info = self.get_h5_idx_num_and_info(imageId)
+        h5_file, idx, num, info = self.get_h5_idx_num_and_info(imageId)
+        bbox = h5_file['bboxes'][idx]
         w, h = info['width'], info['height']
         normalized_bbox = bbox / [w, h, w, h]
         valid = get_valid(len(bbox), num)
         return normalized_bbox, valid
 
     def load_feature_normalized_bbox(self, imageId):
-        info = self.all_info[imageId]
-        file, idx, num = info['file'], info['idx'], info['objectsNum']
-        h5_file = self.h5_files[file]
+        # info = self.all_info[imageId]
+        # file, idx, num = info['file'], info['idx'], info['objectsNum']
+        # h5_file = self.h5_files[file]
+        h5_file, idx, num, info = self.get_h5_idx_num_and_info(imageId)
         feature, bbox = h5_file['features'][idx], h5_file['bboxes'][idx]
         w, h = info['width'], info['height']
         normalized_bbox = bbox / [w, h, w, h]
